@@ -48,7 +48,9 @@ Dlevels(Dlevels<0) = -1;  % Change all negative level changes into '-1'
 for c = Ulevels(end):-1:1 
     % Loop through the levels from high to low
     
-    createPDF(names, levels, Dlevels,c) % Create PDFs from the documents at level 'c'
+    if createPDF(names, levels, Dlevels,c) % Create PDFs from the documents at level 'c'
+      flag = 1;
+    end
     mask = levels~=c;
     names = names(mask);     % Remove the names at level 'c'
     levels = levels(mask);   % Remove the levels at level 'c'
@@ -61,7 +63,8 @@ flag = 0;
 cd(currentdir);
 
 end
-function createPDF(names, levels, Dlevels,c)
+function [sysflag] = createPDF(names, levels, Dlevels,c)
+    sysflag = 0;
     if levels(end)==c
         temp = [names{end},'.pdf'];
         flag = 0;
@@ -76,7 +79,11 @@ function createPDF(names, levels, Dlevels,c)
                 end
             case 1
                 if ~flag && levels(m)==(c-1)
-                    system(sprintf('pdftk %s cat output %s',temp,[names{m},'.pdf']))
+                    [sysStatus,~] = system(...
+                        sprintf('pdftk %s cat output %s&',temp,[names{m},'.pdf']))
+                    if sysStatus
+                      sysflag = 1;
+                    end
                     flag = 1;
                     temp = '';
                 end
