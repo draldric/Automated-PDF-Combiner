@@ -1,11 +1,12 @@
-function [flag] = pdfCombiner
+function [varargout] = pdfCombiner
+flag = 0;
 currentdir = cd;
 try
   defaultdir = fullfile(getenv('userprofile'),'documents');
 catch me  %#ok<NASGU>
   defaultdir = fullfile(getenv('userprofile'));
 end
-[fileName,filePath] = uigetfile([defaultdir,'\']);
+[fileName,filePath] = uigetfile([defaultdir,'\*.*']);
 if ~(filePath)
   flag = 1;
   return
@@ -45,11 +46,13 @@ Ulevels = unique(levels); % Make a list of the different levels
 Dlevels = diff(levels);   % Make a list of the change in level
 Dlevels(Dlevels<0) = -1;  % Change all negative level changes into '-1'
 
+fprintf('\n')
+
 for c = Ulevels(end):-1:1 
     % Loop through the levels from high to low
-    
-    if createPDF(names, levels, Dlevels,c) % Create PDFs from the documents at level 'c'
-      flag = 1;
+    tmpflag = createPDF(names, levels, Dlevels,c); % Create PDFs from the documents at level 'c'
+    if tmpflag
+      flag = flag + tmpflag;
     end
     mask = levels~=c;
     names = names(mask);     % Remove the names at level 'c'
@@ -58,9 +61,13 @@ for c = Ulevels(end):-1:1
     Dlevels(Dlevels<0) = -1; % Change all negative level changes to '-1'
 end
 
-flag = 0;
+fprintf('Finished Combining PDFs with %i Error(s).\n\n',flag);
 
 cd(currentdir);
+
+if nargout>0
+    varargout{1} = flag;
+end
 
 end
 function [sysflag] = createPDF(names, levels, Dlevels,c)
@@ -79,10 +86,14 @@ function [sysflag] = createPDF(names, levels, Dlevels,c)
                 end
             case 1
                 if ~flag && levels(m)==(c-1)
+                    fprintf('Combining: %s\n',strrep(temp,' ',', '));
                     [sysStatus,~] = system(...
-                        sprintf('pdftk %s cat output %s&',temp,[names{m},'.pdf']))
+                        sprintf('pdftk %s cat output %s',temp,[names{m},'.pdf']));
                     if sysStatus
-                      sysflag = 1;
+                        fprintf('Failed to Create: %s\n\n',[names{m},'.pdf']);
+                        sysflag = sysflag + 1;
+                    else
+                        fprintf('Successfully Created: %s\n\n',[names{m},'.pdf']);
                     end
                     flag = 1;
                     temp = '';
