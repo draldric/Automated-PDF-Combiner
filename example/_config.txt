@@ -1,0 +1,17 @@
+% Lines can be commented out using the '%'
+% Comments don't have to be at the start of a line
+% Everything between the comment symbol and the end of a line will be ignored
+_Main_Document %This is a Main PDF
+	PDF0 %This is the name of a pdf file to be included
+	_Sub_Document_1 %This a Sub PDF that will be created
+		PDF1
+		PDF2
+		PDF3
+	PDF4
+	_Sub_Document_2
+		PDF5
+		_Sub_Sub_Document_1
+			PDF6
+			PDF7
+		PDF8
+	PDF9

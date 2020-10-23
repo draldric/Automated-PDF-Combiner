@@ -14,10 +14,19 @@ However, this took the person this was delgated to away from their other tasks.
 And we were dealing with 100+ pdfs, and the main document and all of the sub-documents needed weekly updating.
 While word documents or excel spreadsheets can make keeping track of the sub-documents and the orders of the files easier, it does not cut down one the time required to make the document.
 
+## Setup
+  1. Install GNU Octave/MATLAB
+  2. Install PDFtk-Free/PDFtk-Server
+
 ## Use
 The program utilizes an auxilary (configuration) file to specify the the ordering and sub-documents to create.
+This configuration file can exhist anywhere and does not have to be in the same directory as the pdf to be combined.
+To see the specifics about the format of the configuration file see [Config Syntax](doc/config_syntax.md)
 
 ## Third Party Software
+### GNU Octave/MATLAB (Required)
+The provided program is a script that has been written in an [GNU Octave](https://www.gnu.org/software/octave/)/[MATLAB](https://www.mathworks.com) compatable format.
+The program only requires the base installation of of either software to run.
 ### PDFtk (Required)
 The provided program is able to combine pdfs via a command line utility, [PDFtk-Server](https://www.pdflabs.com/tools/pdftk-server/)/[PDFtk-Free](https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/).
 These tools are used under the GPL license, however, are left for the end user to download and install.
