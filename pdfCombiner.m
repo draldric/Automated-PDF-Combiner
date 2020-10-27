@@ -1,15 +1,19 @@
 function [varargout] = pdfCombiner
-flag = 0;
+if nargout
+    varargout{1} = 0;
+end
 currentdir = cd;
 try
-  defaultdir = fullfile(getenv('userprofile'),'documents');
+    defaultdir = fullfile(getenv('userprofile'),'documents');
 catch me  %#ok<NASGU>
-  defaultdir = fullfile(getenv('userprofile'));
+    defaultdir = fullfile(getenv('userprofile'));
 end
 [fileName,filePath] = uigetfile([defaultdir,'\*.*']);
 if ~(filePath)
-  flag = 1;
-  return
+    if nargout
+        varargout{1} = 1;
+    end
+    return
 end
 fID = fopen(fullfile(filePath,fileName)); % Open txt file
 
@@ -37,8 +41,10 @@ fclose(fID); % Close txt File
 
 [filePath] = uigetdir(filePath);
 if ~(filePath)
-  flag = 1;
-  return
+    if nargout
+        varargout{1} = 0;
+    end
+    return
 end
 cd(filePath);  % CD to PDF Location
 
@@ -52,7 +58,7 @@ for c = Ulevels(end):-1:1
     % Loop through the levels from high to low
     tmpflag = createPDF(names, levels, Dlevels,c); % Create PDFs from the documents at level 'c'
     if tmpflag
-      flag = flag + tmpflag;
+        flag = flag + tmpflag;
     end
     mask = levels~=c;
     names = names(mask);     % Remove the names at level 'c'
